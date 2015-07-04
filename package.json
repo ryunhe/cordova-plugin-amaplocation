@@ -1,0 +1,17 @@
+{
+    "version": "1.0.0",
+    "name": "cordova.plugin.amaplocation",
+    "cordova_name": "AmapLocation",
+    "description": "Cordova Amap Location Plugin",
+    "license": "MIT",
+    "repo": "https://github.com/ryunhe/cordova-plugin-amaplocation.git",
+    "keywords": [
+        "amap",
+        "location"
+    ],
+    "platforms": [
+        "android",
+        "ios"
+    ],
+    "engines": []
+}
