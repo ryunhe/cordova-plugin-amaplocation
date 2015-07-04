@@ -30,7 +30,7 @@
             <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
             <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
         </config-file>
-        <source-file src="src/android/AmapLocation.java" target-dir="src/cordova/plugins/amaplocation" />
+        <source-file src="src/android/AmapLocation.java" target-dir="src/org/apache/cordova/amaplocation" />
         <source-file src="src/android/Android_Location_V1.3.2.jar" target-dir="libs" framework="true" />
     </platform>         
 </plugin>
