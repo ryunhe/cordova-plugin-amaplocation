@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
  
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" 
-    id="cordova.plugins.amaplocation" version="1.0.0">
+    id="cordova-plugins-amaplocation" version="1.0.0">
     <name>AmapLocation</name>
     <description>Amap Location Plugin for Cordova</description>
     <license>MIT</license>
@@ -9,10 +9,10 @@
  
     <!-- android -->
     <platform name="android">
-        <js-module src="www/amaplocation.js" name="AmapLocation">
-            <clobbers target="plugins.amaplocation" />
+        <js-module src="www/amaplocation.js" name="amaplocation">
+            <clobbers target="amaplocation" />
         </js-module>
- 
+
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="AmapLocation">
                 <param name="android-package" value="cordova.plugins.amaplocation.AmapLocation"/>
