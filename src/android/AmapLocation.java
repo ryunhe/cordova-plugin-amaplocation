@@ -28,7 +28,7 @@ public class AmapLocation extends CordovaPlugin implements AMapLocationListener 
 
         Boolean result = false;
 
-        if (ACTION_START.equalsIgnoreCase(action) && mLocationManagerProxy != null) {
+        if (ACTION_START.equalsIgnoreCase(action) && null == mLocationManagerProxy) {
             result = true;
 
             cordova.getActivity().runOnUiThread(new Runnable() {
@@ -68,12 +68,12 @@ public class AmapLocation extends CordovaPlugin implements AMapLocationListener 
     public void onLocationChanged(AMapLocation aMapLocation) {
         if(aMapLocation != null && aMapLocation.getAMapException().getErrorCode() == 0) {
             try {
-                JSONObject position = new JSONObject();
-                position.put("latitude", aMapLocation.getLatitude());
-                position.put("longtitude", aMapLocation.getLongitude());
+                JSONObject coords = new JSONObject();
+                coords.put("latitude", aMapLocation.getLatitude());
+                coords.put("longitude", aMapLocation.getLongitude());
 
                 JSONObject jsonObj = new JSONObject();
-                jsonObj.put("position", position);
+                jsonObj.put("coords", coords);
                 jsonObj.put("accuracy", aMapLocation.getAccuracy());
 
                 Log.d("AmapLocationPlugin", "run: " + jsonObj.toString());
