@@ -10,8 +10,7 @@
         "location"
     ],
     "platforms": [
-        "android",
-        "ios"
+        "android"
     ],
     "engines": []
 }

@@ -1,5 +1,6 @@
 package org.apache.cordova.amaplocation;
 
+import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,35 +17,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class AmapLocation extends CordovaPlugin implements AMapLocationListener {
-    public static final String ACTION_START = "start";
-    public static final String ACTION_STOP = "stop";
+    public static final String TAG = AmapLocation.class.getName();
+    public static final String ACTION_GET = "getCurrentPosition";
 
     CallbackContext mCallbackContext;
     LocationManagerProxy mLocationManagerProxy;
 
     public boolean execute(String action, JSONArray data, CallbackContext callbackContext) {
-
         mCallbackContext = callbackContext;
 
         Boolean result = false;
 
-        if (ACTION_START.equalsIgnoreCase(action) && null == mLocationManagerProxy) {
+        if (ACTION_GET.equalsIgnoreCase(action)) {
+            getCurrentPosition();
             result = true;
-
-            cordova.getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mLocationManagerProxy = LocationManagerProxy.getInstance(cordova.getActivity());
-                    mLocationManagerProxy.requestLocationData(LocationProviderProxy.AMapNetwork, 10 * 1000, 10, AmapLocation.this);
-                    mLocationManagerProxy.setGpsEnable(false);
-                }
-
-            });
-        } else if (ACTION_STOP.equalsIgnoreCase(action)) {
-            result = true;
-
-            terminate();
-            callbackContext.success(200);
         }
 
         return result;
@@ -52,16 +38,28 @@ public class AmapLocation extends CordovaPlugin implements AMapLocationListener 
 
     @Override
     public void onDestroy() {
-        terminate();
+        if (null != mLocationManagerProxy) {
+            mLocationManagerProxy.removeUpdates(this);
+            mLocationManagerProxy.destroy();
+            mLocationManagerProxy = null;
+        }
         super.onDestroy();
     }
 
-    private void terminate() {
-        if (mLocationManagerProxy != null) {
-            mLocationManagerProxy.removeUpdates(this);
-            mLocationManagerProxy.destroy();
-        }
-        mLocationManagerProxy = null;
+    private void getCurrentPosition() {
+        final Activity activity = cordova.getActivity();
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (null == mLocationManagerProxy) {
+                    mLocationManagerProxy = LocationManagerProxy.getInstance(activity);
+                }
+
+                mLocationManagerProxy.requestLocationData(LocationProviderProxy.AMapNetwork, -1, 0, AmapLocation.this);
+                mLocationManagerProxy.setGpsEnable(true);
+            }
+        });
     }
 
     @Override
@@ -71,12 +69,15 @@ public class AmapLocation extends CordovaPlugin implements AMapLocationListener 
                 JSONObject coords = new JSONObject();
                 coords.put("latitude", aMapLocation.getLatitude());
                 coords.put("longitude", aMapLocation.getLongitude());
+                coords.put("altitude", aMapLocation.getAltitude());
+                coords.put("accuracy", aMapLocation.getAccuracy());
+                coords.put("speed", aMapLocation.getSpeed());
 
                 JSONObject jsonObj = new JSONObject();
                 jsonObj.put("coords", coords);
-                jsonObj.put("accuracy", aMapLocation.getAccuracy());
+                jsonObj.put("timestamp", aMapLocation.getTime());
 
-                Log.d("AmapLocationPlugin", "run: " + jsonObj.toString());
+                Log.d(TAG, "onLocationChanged:" + jsonObj.toString());
 
                 mCallbackContext.success(jsonObj);
             } catch (JSONException e) {
